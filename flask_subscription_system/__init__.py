@@ -6,10 +6,12 @@ from flask_mail import Mail
 
 
 __version__ = '0.1.0'
+CONFIRM_EMAIL = True
+
+
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 mail = Mail()
-
 
 def create_app():
     app = Flask(__name__)
