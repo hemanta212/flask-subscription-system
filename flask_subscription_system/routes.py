@@ -9,8 +9,8 @@ from flask_subscription_system.models import User
 main = Blueprint('main', __name__)
 
 
-@main.route("/register", methods=["GET", 'POST'])
-def register():
+@main.route("/subscribe", methods=["GET", 'POST'])
+def subscribe():
     form = RegisterForm()
     blog = request.args.get('blog', None, type=str)
 
@@ -32,7 +32,49 @@ please check it and confirm the subscription before 24 hrs
                 return render_template('confirm.html', message=message,
                                        heading='Subsciption confirmation')
 
-            return redirect(url_for('main.register'))
+            return redirect(url_for('main.subscribe', blog=blog))
+
+        if not CONFIRM_EMAIL:
+            user = add_email(blog, form.email.data)
+            message = '''\
+You have been successfully subscribed to {0}
+and will receive email everytime a post is uploaded to {0}
+'''.format(user.blog)
+
+            return render_template('confirm.html', title='Register Successful',
+                                   message=message, heading='Success')
+        else:
+            user = add_email(blog, form.email.data, verified=0)
+            flash('Confirmation email is sent. Check your email.')
+            send_confirmation_mail(user)
+
+    return render_template('home.html', form=form, blog=blog)
+
+
+@main.route("/subscribe", methods=["GET", 'POST'])
+def subscribe():
+    form = RegisterForm()
+    blog = request.args.get('blog', None, type=str)
+
+    if not blog:
+        message_404 = '404 page not found. Please check the url'
+        return render_template('confirm.html', title='404 Error',
+                               heading='404 Error:', message=message_404)
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(blog=blog, email=form.email.data).first()
+        if user:
+            flash("You have already subscibed to this blog with this email!")
+            if not user.verified:
+                message = '''
+You have not confirmed your subsciption for {0} yet. We have sent you an email
+please check it and confirm the subscription before 24 hrs
+'''.format(blog)
+                send_confirmation_mail(user)
+                return render_template('confirm.html', message=message,
+                                       heading='Subsciption confirmation')
+
+            return redirect(url_for('main.subscribe', blog=blog))
 
         if not CONFIRM_EMAIL:
             user = add_email(blog, form.email.data)
@@ -104,3 +146,15 @@ def add_email(blog, email, verified=None):
     db.session.add(user)
     db.session.commit()
     return user
+
+
+def send_email(blog, subject, topic, subscribers, content=None):
+    for subscriber in subscribers:
+        unsubscribe_token = subscriber.get_confirm_token(expires_sec=3135600)
+        msg = Message(subject, sender='noreply@FSS.com',
+                      recipients=[subscriber.email])
+
+        mail_content = render_template('subscription_email.html', blog=blog,
+                                       token=unsubscribe_token,
+                                       content=content, topic=topic)
+        mail.send(msg)
