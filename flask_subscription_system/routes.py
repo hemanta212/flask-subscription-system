@@ -20,6 +20,20 @@ def register():
                                heading='404 Error:', message=message_404)
 
     if form.validate_on_submit():
+        user = User.query.filter_by(blog=blog, email=form.email.data).first()
+        if user:
+            flash("You have already subscibed to this blog with this email!")
+            if not user.verified:
+                message = '''
+You have not confirmed your subsciption for {0} yet. We have sent you an email
+please check it and confirm the subscription before 24 hrs
+'''.format(blog)
+                send_confirmation_mail(user)
+                return render_template('confirm.html', message=message,
+                                       heading='Subsciption confirmation')
+
+            return redirect(url_for('main.register'))
+
         if not CONFIRM_EMAIL:
             user = add_email(blog, form.email.data)
             message = '''\

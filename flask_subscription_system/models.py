@@ -5,7 +5,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     blog = db.Column(db.String(100),  nullable=False)
-    email = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
     verified = db.Column(db.Integer)
 
     def get_confirm_token(self, expires_sec=1800):
@@ -30,3 +30,22 @@ class User(db.Model):
     def __repr__(self):
         return 'user({0}, {1}, {2})'.format(self.blog, self.email,
                                             self.verified)
+
+
+class Blog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100),  nullable=False)
+
+
+    def __repr__(self):
+        return 'blog({0}, {1})'.format(self.id, self.name)
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100),  nullable=False)
+    heading = db.Column(db.String(100), nullable=False)
+
+
+    def __repr__(self):
+        return 'blog({0}, {1})'.format(self.id, self.name)
