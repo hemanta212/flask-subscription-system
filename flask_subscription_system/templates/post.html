@@ -1,0 +1,62 @@
+{%extends 'layout.html'%}
+{%block content%}
+<br><br><br>
+
+
+<!-- Material form login -->
+<form method="POST" action="">
+    {{form.hidden_tag()}}
+    <fieldset>
+        <p class="h4 text-center mb-4">Subscribe to blog</p>
+
+        <div class="modal-body">
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.subject(id="modalLRInput15", class="form-control form-control-sm validate")}}
+                {{form.subject.label(for="modalLRInput15")}}
+
+              	{%if form.subject.errors%}
+                    {%for error in form.subject.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.topic(id="modalLRInput135", class="form-control form-control-sm validate")}}
+                {{form.topic.label(for="modalLRInput15")}}
+
+                {%if form.topic.errors%}
+                    {%for error in form.topic.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.content(id="modalLRInput15", class="form-control form-control-sm validate")}}
+                {{form.content.label(for="modalLRInput15")}}
+
+              	{%if form.content.errors%}
+                    {%for error in form.content.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="text-center mt-4">
+                {{form.submit(class="btn btn-default")}}
+            </div>
+
+        </div>
+    </fieldset>
+</form>
+<br>
+
+{%endblock content%}

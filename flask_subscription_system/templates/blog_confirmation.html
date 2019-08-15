@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <title>Confirmation for blog subscription</title>
+    <title>Confirmation for blog registration</title>
     <!--
     The style block is collapsed on page load to save you some scrolling.
     Postmark automatically inlines all CSS properties for maximum email client
@@ -18,12 +18,12 @@
 </style>
 
 <body>
-    <span class="preheader">Please confirm email subscription for {{user.blog}}. The link is only valid for 24 hours.</span>
+    <span class="preheader">Please confirm blog registration for {{blog.name}}. The link is only valid for 24 hours.</span>
     <table class="email-wrapper" width="100%" cellpadding="0" cellspacing="0">
         <tr>
             <td align="center">
                 <table class="email-content" width="100%" cellpadding="0" cellspacing="0">
-                     <!-- Email Body -->
+                <!-- Email Body -->
                     <tr>
                         <td class="email-body" width="100%" cellpadding="0" cellspacing="0">
                             <table class="email-body_inner" align="center" width="570" cellpadding="0" cellspacing="0">
@@ -31,7 +31,7 @@
                                 <tr>
                                     <td class="content-cell">
                                         <h1>Hi there,</h1>
-                                        <p>You recently requested for email subscription of {{user.blog}}. Use the button below to confirm it. <strong>This link is only valid for the next 24 hours.</strong></p>
+                                        <p>You recently requested for blog registration of {{blog.name}}. Use the button below to confirm it. <strong>This link is only valid for the next 24 hours.</strong></p>
                                         <!-- Action -->
                                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0">
                                             <tr>
@@ -54,9 +54,9 @@
                                                 </td>
                                             </tr>
                                         </table>
-                                        <p>For security reasons: this request was received from someone who mentioned your email. If you did not request a subscription, you can safely ignore this email.</p>
-                                        <p>Thanks,
-                                        <br>'{{user.blog}}' blog</p>
+                                        <p>For security reasons: this request was received from someone who mentioned your email. If you did not request it, you can safely ignore this email.</p>
+                                        <p>Thanks
+                                        <br>Flask Subscription Service</p>
                                         <!-- Sub copy -->
                                         <table class="body-sub">
                                             <tr>

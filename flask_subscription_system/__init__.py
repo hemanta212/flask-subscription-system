@@ -6,7 +6,8 @@ from flask_mail import Mail
 
 
 __version__ = '0.1.0'
-CONFIRM_EMAIL = True
+CONFIRM_SUBSCRIBER_EMAIL = True
+CONFIRM_BLOGGER_EMAIL = True
 
 
 db = SQLAlchemy()

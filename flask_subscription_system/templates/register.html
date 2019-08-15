@@ -1,0 +1,89 @@
+{%extends 'layout.html'%}
+{%block content%}
+<br><br><br>
+
+
+<!-- Material form login -->
+<form method="POST" action="">
+    {{form.hidden_tag()}}
+    <fieldset>
+        <p class="h4 text-center mb-4">Subscribe to blog</p>
+
+        <div class="modal-body">
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.blog_id(id="modalLRInput15", class="form-control form-control-sm validate")}}
+                {{form.blog_id.label(for="modalLRInput15")}}
+
+              	{%if form.blog_id.errors%}
+                    {%for error in form.blog_id.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.name(id="modalLRInput135", class="form-control form-control-sm validate")}}
+                {{form.name.label(for="modalLRInput15")}}
+
+                {%if form.name.errors%}
+                    {%for error in form.name.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <!-- Material input email -->
+            <div class="md-form">
+                <i class="fa fa-envelope prefix grey-text"></i>
+                {{form.email(type="email", id="materialFormLoginEmailEx", class="form-control")}}
+                {{form.email.label(for="materialFormLoginEmailEx")}}
+    
+                {%if form.email.errors%}
+                    {%for error in form.email.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-lock prefix"></i>
+                {{form.password(type="password", id="modalLRInput14", class="form-control form-control-sm validate")}}
+                {{form.password.label(for="modalLRInput14")}}
+
+                {%if form.password.errors%}
+                    {%for error in form.password.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-lock prefix"></i>
+                {{form.confirm_password(type="password", id="modalLRInput13", class="form-control form-control-sm validate")}}
+                {{form.confirm_password.label(for="modalLRInput13")}}
+                {%if form.confirm_password.errors%}
+                    {%for error in form.confirm_password.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="text-center mt-4">
+                {{form.submit(class="btn btn-default")}}
+            </div>
+
+
+        </div>
+    </fieldset>
+</form>
+<br>
+
+{%endblock content%}
