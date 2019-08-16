@@ -14,13 +14,11 @@ main = Blueprint('main', __name__)
 @main.route("/register", methods=["GET", 'POST'])
 def register():
     form = RegisterForm()
+
     if form.validate_on_submit():
         blog = Blog.query.filter_by(blog_id=form.blog_id.data).first()
         if blog and blog.verified:
             flash("You have already registered this blog!")
-        if blog and not blog.verified:
-            db.session.delete(blog)
-            db.session.commit()
 
         hashed_password = bcrypt.generate_password_hash(
                                     form.password.data).decode('utf-8')
@@ -35,7 +33,7 @@ You have been successfully reigistered as {0}
 '''.format(blog.name)
             return render_template('confirm.html', title='Register Successful',
                                    message=message, heading='Success')
-        else:
+        elif CONFIRM_BLOGGER_EMAIL:
             flash('Confirmation email is sent. Check your email.')
             send_blog_confirmation_mail(blog)
 
@@ -93,6 +91,8 @@ def unsubscribe(token):
     user = User.verify_confirm_token(token)
     if not user:
         flash('Invalid or expired token!', 'warning')
+        return render_template('confirm.html', heading='', message='Try again.',
+                title='Invalid token')
 
     db.session.delete(user)
     db.session.commit()
@@ -106,23 +106,19 @@ and will no longer receive email everytime a post is uploaded to {0}
                            message=message, heading='Success')
 
 
-@main.route("/post/<token>", methods=["GET", 'POST'])
-def post(token):
-    logged = False
-    blog_id, password = token.split(":", 1)
-    blog = Blog.query.filter_by(blog_id=blog_id).first()
-    if blog and bcrypt.check_password_hash(blog.password, password):
-        logged = True
+@main.route("/post", methods=["GET", 'POST'])
+def post():
     form = PostForm()
-
-    if form.validate_on_submit() and logged:
-        subscribers = User.query.filter_by(blog_id=blog_id)
+    if form.validate_on_submit():
+        subscribers = User.query.filter_by(blog_id=form.blog_id.data)
+        blog = Blog.query.filter_by(blog_id=form.blog_id.data).first()
         send_subscription_mail(blog.name, subject=form.subject.data,
                                topic=form.topic.data, subscribers=subscribers,
                                content=form.content.data)
         return redirect(url_for('main.post_success'))
 
-    return render_template('post.html', form=form, blog=blog)
+    print("POST: failed", form.errors)
+    return render_template('post.html', form=form)
 
 
 @main.route("/posted", methods=["GET"])
@@ -137,6 +133,8 @@ def confirm_subscription_email(token):
     user = User.verify_confirm_token(token)
     if not user:
         flash('Invalid or expired token!', 'warning')
+        return render_template('confirm.html', heading='', message='Try again.',
+                title='Invalid token')
 
     user.verified = 1
     db.session.add(user)
@@ -156,6 +154,7 @@ def confirm_blog_email(token):
     blog = Blog.verify_confirm_token(token)
     if not blog:
         flash('Invalid or expired token!', 'warning')
+        return url_for('main.register')
 
     blog.verified = 1
     db.session.add(blog)
@@ -203,7 +202,10 @@ def send_subscription_mail(blog, subject, topic, subscribers, content):
         msg = Message(subject, sender='noreply@FSS.com',
                       recipients=[subscriber.email])
 
-        mail_content = render_template('subscription_email.html', blog=blog,
+        msg.html = render_template('feed_email.html', blog=blog,
                                        action_url=action_url,
                                        content=content, topic=topic)
-        mail.send(msg)
+        try:
+            mail.send(msg)
+        except Exception as E:
+            print("Failed for ", subscriber.email)

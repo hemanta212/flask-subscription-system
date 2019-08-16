@@ -1,8 +1,9 @@
 from flask import flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, TextField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField
 from wtforms.validators import (DataRequired, Email, Length, EqualTo,
                                 ValidationError)
+from flask_subscription_system import db
 from flask_subscription_system.models import Blog
 
 
@@ -31,9 +32,18 @@ class RegisterForm(FlaskForm):
         Checks if email is already registered and raises a
         ValidationError and flashes a warning if so
         '''
+
+        print("FORM:: Validation....")
         duplicate_blog = Blog.query.filter_by(blog_id=blog_id.data).first()
-        if duplicate_blog and duplicate_blog.verified:
+        print("Duplicate_blog", str(duplicate_blog))
+        if duplicate_blog and not duplicate_blog.is_expired():
             raise ValidationError('Blog_id already used! Try another.')
+
+        if duplicate_blog and duplicate_blog.is_expired():
+            print("FORM:: deleting blog")
+            db.session.delete(duplicate_blog)
+            db.session.commit()
+        print("FORM: exiting")
 
 
 class SubscriptionForm(FlaskForm):
@@ -60,7 +70,22 @@ class PostForm(FlaskForm):
         validate_email(): checks if email is already registered
     '''
 
+    blog_id = StringField("blog-id", validators=[DataRequired()])
+    password = PasswordField("password", validators=[
+        DataRequired(), Length(min=3)])
     subject = StringField("Subject", validators=[DataRequired()])
     topic = StringField("Topic", validators=[DataRequired()])
-    content = TextField("Content")
-    submit = SubmitField('Subscribe')
+    content = TextAreaField("Content")
+    submit = SubmitField('Publish')
+
+    def validate_user(self, blog_id, password):
+        '''
+        Checks if email is already registered and raises a
+        ValidationError and flashes a warning if so
+        '''
+
+        blog = Blog.query.filter_by(blog_id=blog_id.data).first()
+        if blog and bcrypt.check_password_hash(blog.password, password.data):
+            return
+
+        raise ValidationError("Invalid username or password match")

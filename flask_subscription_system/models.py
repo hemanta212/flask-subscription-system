@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import current_app
 from flask_subscription_system import db
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -40,6 +41,18 @@ class Blog(db.Model):
     name = db.Column(db.String(100),  nullable=False)
     password = db.Column(db.String(500), nullable=False)
     verified = db.Column(db.Integer)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def is_expired(self, time_period=3600):
+        print("MODEL: date_created", self.date_created, "time_period", time_period)
+        account_age = datetime.utcnow() - self.date_created
+        print("MODEl: account age:", account_age.seconds)
+        if account_age.seconds >= time_period and not self.verified:
+            print("MODEL: returning true")
+            return True
+
+        print("MODEL: returning False verified", self.verified)
+        return False
 
     def get_confirm_token(self, expires_sec=1800):
         '''Gets token for confirming email

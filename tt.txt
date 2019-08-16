@@ -1,6 +1,0 @@
-def calc(exp):
-    return eval(exp)
-
-while True:
-    inp = input(">> ")
-    print(calc(inp))

@@ -7,9 +7,34 @@
 <form method="POST" action="">
     {{form.hidden_tag()}}
     <fieldset>
-        <p class="h4 text-center mb-4">Subscribe to blog</p>
+        <p class="h4 text-center mb-4">Publish updates</p>
 
         <div class="modal-body">
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.blog_id(id="modalLRInput15", class="form-control form-control-sm validate")}}
+                {{form.blog_id.label(for="modalLRInput15")}}
+
+              	{%if form.blog_id.errors%}
+                    {%for error in form.blog_id.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
+
+            <div class="md-form form-sm mb-4">
+                <i class="fa fa-envelope prefix"></i>
+                {{form.password(id="modalLRInput15", class="form-control form-control-sm validate")}}
+                {{form.password.label(for="modalLRInput15")}}
+
+              	{%if form.password.errors%}
+                    {%for error in form.password.errors%}
+                        <span>{{error}}</span>
+                    {%endfor%}
+                {%endif%}
+            </div>
+
 
             <div class="md-form form-sm mb-4">
                 <i class="fa fa-envelope prefix"></i>

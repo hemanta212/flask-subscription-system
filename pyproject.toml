@@ -6,6 +6,11 @@ authors = ["Hemanta Sharma <sharmahemanta.212@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.5"
+flask-sqlalchemy = "^2.4"
+flask-mail = "^0.9.1"
+flask-bcrypt = "^0.7.1"
+flask = "^1.1"
+flask-wtf = "^0.14.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
